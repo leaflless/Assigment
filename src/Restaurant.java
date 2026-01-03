@@ -1,26 +1,46 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 public class Restaurant {
     private String name;
     private String address;
+    private List<MenuItem> menu = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
-    public Restaurant(String name, String address){
+    public Restaurant(String name, String address) {
         this.name = name;
         this.address = address;
     }
-    public String getName(){
-        return name;
+
+    public void addMenuItem(MenuItem item) {
+        menu.add(item);
     }
-    public void setName(String name){
-        this.name = name;
+
+    public void addOrder(Order order) {
+        orders.add(order);
     }
-    public String getAddress(){
-        return address;
+
+    public void showMenu() {
+        menu.forEach(System.out::println);
     }
-    public void setAddress(String address){
-        this.address = address;
+
+    public void sortMenuByPrice() {
+        menu.sort(Comparator.comparingDouble(MenuItem::getPrice));
     }
-    public void displayRestaurant(){
-        System.out.println("Restaurant: " + name);
-        System.out.println("Address: " + address);
+
+    public MenuItem findByName(String name) {
+        for (MenuItem item : menu) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public void showOrders() {
+        orders.forEach(o ->
+                System.out.println(o.getInfo() + ", total = " + o.calculateTotal())
+        );
     }
 }
-

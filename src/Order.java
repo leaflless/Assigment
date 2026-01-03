@@ -1,32 +1,40 @@
-public class Order {
-    private int orderId;
+import java.util.Objects;
+
+public class Order extends BaseEntity {
+    private int id;
     private MenuItem item;
     private int quantity;
 
-    public Order(int orderId, MenuItem item, int quantity){
-        this.orderId = orderId;
+    public Order(int id, MenuItem item, int quantity) {
+        this.id = id;
         this.item = item;
         this.quantity = quantity;
     }
-    public int getOrderId(){
-        return orderId;
-    }
-    public void setOrderId(int orderId){
-        this.orderId = orderId;
-    }
-    public MenuItem getItem(){
-        return item;
-    }
-    public void setItem(MenuItem item){
-        this.item = item;
-    }
-    public int getQuantity(){
-        return quantity;
-    }
-    public void setQuantity(int quantity){
-        this.quantity = quantity;
-    }
-    public double calculateTotal(){
+
+    public double calculateTotal() {
         return item.getPrice() * quantity;
+    }
+
+    @Override
+    public String getInfo() {
+        return "Order №" + id + ": " + item.getName() + " x" + quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{id=" + id + ", item=" + item + ", quantity=" + quantity + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
+        Order order = (Order) o;
+        return id == order.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

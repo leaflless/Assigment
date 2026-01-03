@@ -1,27 +1,33 @@
+import java.util.Scanner;
+
 public class Main {
-    public static void main(String[] args){
-        Restaurant restaurant = new Restaurant(
-                "Rest",
-                "Astana, Turan 10"
-        );
-        MenuItem pizza = new MenuItem("Pizza", 3000);
-        MenuItem burger = new MenuItem("Burger", 2000);
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        Order order1 = new Order(1, pizza, 2);
-        Order order2 = new Order(2, burger, 1);
+        Restaurant restaurant = new Restaurant("Rest", "Astana, Turan 10");
 
-        restaurant.displayRestaurant();
+        restaurant.addMenuItem(new MenuItem("Pizza", 3000));
+        restaurant.addMenuItem(new MenuItem("Burger", 2000));
+        restaurant.addMenuItem(new MenuItem("Pasta", 2500));
 
-        pizza.displayInfo();
-        burger.displayInfo();
+        restaurant.sortMenuByPrice();
+        restaurant.showMenu();
 
-        System.out.println("Order 1: " + order1.calculateTotal());
-        System.out.println("Order 2: " + order2.calculateTotal());
+        System.out.print("Dish name: ");
+        String dishName = scanner.nextLine();
 
-        if (order1.calculateTotal() > order2.calculateTotal()) {
-            System.out.println("Order 1 is more expansive");
+        MenuItem item = restaurant.findByName(dishName);
+        if (item != null) {
+            System.out.print("Quantity: ");
+            int qty = scanner.nextInt();
+
+            Order order = new Order(1, item, qty);
+            restaurant.addOrder(order);
+
+            System.out.println("Order created:");
+            restaurant.showOrders();
         } else {
-            System.out.println("Order 2 is more expansive");
+            System.out.println("Dish not found");
         }
     }
 }
