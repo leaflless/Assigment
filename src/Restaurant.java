@@ -29,18 +29,15 @@ public class Restaurant {
         menu.sort(Comparator.comparingDouble(MenuItem::getPrice));
     }
 
-    public MenuItem findByName(String name) {
-        for (MenuItem item : menu) {
-            if (item.getName().equalsIgnoreCase(name)) {
-                return item;
-            }
+    public MenuItem findByName(String name){
+        for(MenuItem item : menu) {
+            return item;
         }
         return null;
     }
 
-    public void showOrders() {
-        orders.forEach(o ->
-                System.out.println(o.getInfo() + ", total = " + o.calculateTotal())
-        );
+    public void showOrders(){
+        orders.forEach(o->
+                System.out.println(o.getInfo()+", total: "+o.calculateTotal()));
     }
 }

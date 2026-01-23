@@ -1,34 +1,30 @@
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        Restaurant restaurant = new Restaurant("Rest", "Astana, Turan 10");
+        MenuItem pizza = new MenuItem(1,"Pizza", 3000);
+        MenuItem burger = new MenuItem(2,"Burger", 2000);
+        MenuItem pasta = new MenuItem(3,"Pasta", 2500);
 
-        restaurant.addMenuItem(new MenuItem("Pizza", 3000));
-        restaurant.addMenuItem(new MenuItem("Burger", 2000));
-        restaurant.addMenuItem(new MenuItem("Pasta", 2500));
+        MenuItemDAO.save(pizza);
+        MenuItemDAO.save(burger);
+        MenuItemDAO.save(pasta);
 
-        restaurant.sortMenuByPrice();
-        restaurant.showMenu();
+        Order order1 = new Order(101, pizza, 2);
+        Order order2 = new Order(102, burger, 1);
+        Order order3 = new Order(103,pasta,2);
 
-        System.out.print("Dish name: ");
-        String dishName = scanner.nextLine();
+        OrderDAO.save(order1);
+        OrderDAO.save(order2);
+        OrderDAO.save(order3);
 
-        MenuItem item = restaurant.findByName(dishName);
-        if (item != null) {
-            System.out.print("Quantity: ");
-            int qty = scanner.nextInt();
+        OrderDAO.updateQuantity(101, 3);
 
-            Order order = new Order(1, item, qty);
-            restaurant.addOrder(order);
+        MenuItemDAO.updatePrice("Pizza", 3500);
 
-            System.out.println("Order created:");
-            restaurant.showOrders();
-        } else {
-            System.out.println("Dish not found");
-        }
+        System.out.println("MENU FROM DATABASE:");
+        MenuItemDAO.findAll().forEach(System.out::println);
     }
 }
+
+
 
