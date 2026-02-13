@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Items</title>
+    <style>
+        body { font-family: Arial; margin: 30px; }
+        h1 { font-size: 36px; }
+        input { padding: 6px; margin-right: 6px; margin-top: 5px; }
+        button { padding: 6px 10px; margin-right: 6px; margin-top: 5px; }
+        table { border-collapse: collapse; margin-top: 20px; width: 500px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #f2f2f2; }
+        .error { color: red; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<h1>Items Table</h1>
+
+<div>
+    <input id="name" placeholder="Name">
+    <input id="price" type="number" placeholder="Price">
+    <button onclick="createItem()">Create</button>
+    <button onclick="reload()">Reload</button>
+</div>
+
+<div>
+    <input id="id" type="number" placeholder="ID">
+    <button onclick="getItem()">Get by ID</button>
+    <button onclick="updateItem()">Update by ID</button>
+    <button onclick="deleteItem()">Delete by ID</button>
+</div>
+
+<div class="error" id="error"></div>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+    </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+
+    const API = "/api/items";
+
+    function showError(msg){
+        document.getElementById("error").textContent = msg;
+    }
+
+    function clearError(){
+        document.getElementById("error").textContent = "";
+    }
+
+    async function reload(){
+        clearError();
+        const res = await fetch(API);
+        const data = await res.json();
+
+        const table = document.getElementById("tableBody");
+        table.innerHTML = "";
+
+        data.forEach(i => {
+            table.innerHTML += `
+                <tr>
+                    <td>${i.id}</td>
+                    <td>${i.name}</td>
+                    <td>${i.price}</td>
+                </tr>`;
+        });
+    }
+
+    async function createItem(){
+        clearError();
+        const name = document.getElementById("name").value;
+        const price = Number(document.getElementById("price").value);
+
+        const res = await fetch(API,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({name, price})
+        });
+
+        if(!res.ok){
+            const err = await res.json();
+            showError(err.message);
+            return;
+        }
+
+        reload();
+    }
+
+    async function getItem(){
+        clearError();
+        const id = document.getElementById("id").value;
+
+        const res = await fetch(API + "/" + id);
+
+        if(!res.ok){
+            const err = await res.json();
+            showError(err.message);
+            return;
+        }
+
+        const i = await res.json();
+
+        document.getElementById("tableBody").innerHTML = `
+            <tr>
+                <td>${i.id}</td>
+                <td>${i.name}</td>
+                <td>${i.price}</td>
+            </tr>`;
+    }
+
+    async function updateItem(){
+        clearError();
+        const id = document.getElementById("id").value;
+        const name = document.getElementById("name").value;
+        const price = Number(document.getElementById("price").value);
+
+        const res = await fetch(API + "/" + id,{
+            method:"PUT",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({name, price})
+        });
+
+        if(!res.ok){
+            const err = await res.json();
+            showError(err.message);
+            return;
+        }
+
+        reload();
+    }
+
+    async function deleteItem(){
+        clearError();
+        const id = document.getElementById("id").value;
+
+        const res = await fetch(API + "/" + id,{
+            method:"DELETE"
+        });
+
+        if(!res.ok){
+            const err = await res.json();
+            showError(err.message);
+            return;
+        }
+
+        reload();
+    }
+
+    reload();
+
+</script>
+
+</body>
+</html>
